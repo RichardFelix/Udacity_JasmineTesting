@@ -37,10 +37,9 @@ $(function() {
            for(var x = 0; x < allFeedsLength; x++){
              var feedsUrl = allFeeds[x].url;
 
-             expect(feedsUrl).not.toBe("");
              expect(feedsUrl).not.toBe('');
-             expect(feedsUrl).not.toBe(null);
-             expect(feedsUrl).not.toBe(undefined);
+             expect(feedsUrl).not.toBeNull();
+             expect(feedsUrl).toBeDefined();
            }
          });
 
@@ -55,10 +54,9 @@ $(function() {
            for(var x = 0; x < allFeedsLength; x++){
              var feedsName = allFeeds[x].name;
 
-             expect(feedsName).not.toBe("");
              expect(feedsName).not.toBe('');
-             expect(feedsName).not.toBe(null);
-             expect(feedsName).not.toBe(undefined);
+             expect(feedsName).not.toBeNull();
+             expect(feedsName).toBeDefined();
            }
          });
     });
@@ -67,15 +65,14 @@ $(function() {
     /* TODO: Write a new test suite named "The menu" */
     describe('The menu', function() {
 
+         var bodyClass = $('body').attr('class');
         /* TODO: Write a test that ensures the menu element is
          * hidden by default. You'll have to analyze the HTML and
          * the CSS to determine how we're performing the
          * hiding/showing of the menu element.
          */
          it('is hidden by default', function() {
-            var menu = $('body').attr('class');
-
-            expect(menu).toBe('menu-hidden');
+            expect(bodyClass).toBe('menu-hidden');
          });
 
          /* TODO: Write a test that ensures the menu changes
@@ -84,9 +81,10 @@ $(function() {
           * clicked and does it hide when clicked again.
           */
           it('visibility changes on menu icon click', function() {
-            var visibile = $('.slide-menu').css('transform');
-
-            expect(visibile).toBe('matrix(1, 0, 0, 1, -192, 0)')
+            $('.icon-list').trigger('click');
+            expect(bodyClass).not.toBe('');
+            $('.icon-list').trigger('click');
+            expect(bodyClass).toBe('menu-hidden');
           });
     });
     /* TODO: Write a new test suite named "Initial Entries" */
@@ -97,13 +95,32 @@ $(function() {
          * Remember, loadFeed() is asynchronous so this test will require
          * the use of Jasmine's beforeEach and asynchronous done() function.
          */
+         beforeEach(function(done) {
+           loadFeed(0, done);
+         });
 
-    /* TODO: Write a new test suite named "New Feed Selection"
-
-        /* TODO: Write a test that ensures when a new feed is loaded
-         * by the loadFeed function that the content actually changes.
-         * Remember, loadFeed() is asynchronous.
-         */
+         it('are fetched successfully', function(done) {
+           expect($('.entry-link').length).not.toBe(0);
+           done();
+         });
     });
+    /* TODO: Write a new test suite named "New Feed Selection"*/
+    describe('New Feed Selection', function() {
 
+      var firstFeed, secondFeed;
+      /* TODO: Write a test that ensures when a new feed is loaded
+       * by the loadFeed function that the content actually changes.
+       * Remember, loadFeed() is asynchronous.
+       */
+       beforeEach(function(done) {
+         loadFeed(0, done);
+       });
+
+       it('is being loaded successfully', function(done) {
+         firstFeed = $('.entry')[0].innerText;
+         secondFeed= $('.entry')[1].innerText;
+         expect(firstFeed).not.toBe(secondFeed);
+         done();
+       });
+    });
 }());
